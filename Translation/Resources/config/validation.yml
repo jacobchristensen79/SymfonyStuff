@@ -1,0 +1,18 @@
+MyBundle\ModelBundle\Entity\Brand:
+    constraints:
+        - Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity: name       
+    properties:
+        name:
+            - NotBlank: ~
+            - Length:
+                min: 2
+                max: 45
+                minMessage: "Name must be at least {{ limit }} characters length"
+                maxMessage: "Name cannot be longer than {{ limit }} characters length"
+        description:
+            - All:
+                - NotBlank: ~
+                - Length:
+                    min: 5
+                    max: 45
+                    maxMessage: "Name cannot be longer than {{ limit }} characters length"

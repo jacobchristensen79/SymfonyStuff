@@ -1,0 +1,38 @@
+$brand = $brandRepository->find(1);
+
+$brand->setLocale('en');
+echo 'Name Main: '.$brand->getName();
+echo 'Translateds Description: '.$brand->getDescription();
+
+$brand->setLocale('es');
+echo 'Nombre Primario: '.$brand->getName();
+echo 'Traducido Descripcion: '.$brand->getDescription();
+
+// Guardar según último idioma
+$brand->setDescription('test Español blabla');
+$em->persist($brand);
+$em->flush();
+
+// Test New Brand
+        $brand = new Brand();
+        $brand->setName('Jacob Branding 6');
+        $brand->setEunasaId(43);
+        $brand->setLocale('es')->setDescription('Test new Españolo 43');
+        $brand->setLocale('en')->setDescription('Test new English 43');
+        $em->persist($brand);
+         
+        $em->flush();
+
+    /**
+     * @var string
+     *
+     * @Translation("Description", name="description", type="string", nullable=true)
+     */
+    protected $description;
+
+TWIG:
+<hr>
+{{ brand.locale('es').description }}
+<hr>
+{{ brand.locale('en').description }}
+

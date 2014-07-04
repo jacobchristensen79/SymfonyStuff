@@ -1,0 +1,21 @@
+jQuery DataGrid Helper, In controller
+
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpFoundation\Request;
+
+public function ajaxlistAction(Request $request)
+{
+
+
+	$jqgrid = $this->get('jgrid.service');
+
+	$collumns = array('id', 'name', 'slug', 'status');
+	$jqgrid->setCollumns($collumns);
+	$jqgrid->setModel('MyModelBundle:YourEntity');
+	//request and searcher column name
+	$jqgrid->setParameters($request, 'apiCatwalkId');
+
+	$grid_data = $jqgrid->getResult();
+
+	return new JsonResponse($grid_data);
+}

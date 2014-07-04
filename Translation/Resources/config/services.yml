@@ -1,0 +1,8 @@
+parameters:
+#    model.example.class: MyBundle\ModelBundle\Example
+
+services:
+  model.entity_listener:
+        class: MyBundle\ModelBundle\Doctrine\EntityListener
+        tags:
+            - { name: doctrine.event_subscriber, connection: default }
