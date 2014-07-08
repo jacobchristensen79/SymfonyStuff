@@ -42,6 +42,7 @@ class EntityListener implements EventSubscriber
         
         if ( is_subclass_of($entity, 'MyBundle\ModelBundle\Doctrine\DynamicFields') ){
         	if(!$this->entityManager) $this->entityManager = $args->getEntityManager();
+        	$this->entity->setRealUpdatedAt($this->entity->getUpdatedAt());
         	$this->parseAnnotations($eName);
         	$this->setChildValues($eName);
         }
@@ -113,7 +114,8 @@ class EntityListener implements EventSubscriber
 				}
 			}
 			
-		}		
+		}
+
 	}
 	
 	

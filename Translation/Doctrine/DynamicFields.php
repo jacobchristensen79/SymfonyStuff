@@ -13,6 +13,7 @@ class DynamicFields
 	private $iso;
 	public $isos = array();
 	private $realUpdatedAt;
+	private $loadedLanguages = array();
 	
 	private $translationErrors = array();
 			
@@ -134,7 +135,13 @@ class DynamicFields
 	 */
 	private function setDynamicTranslations($iso)
 	{
+		if ( empty($this->getId()) ) return $this;
+
 		if ( !is_object($this->entityManager) ) return $this;
+		
+		if ( empty($this->translatableFields) ) return $this;
+		
+		if ( in_array($iso, $this->loadedLanguages )) return $this;
 		
 		$updatedAt = $this->getUpdatedAt();
 		$this->setRealUpdatedAt($updatedAt);
@@ -157,13 +164,17 @@ class DynamicFields
 		$stmt->execute();
 		$results = $stmt->fetch();
 		
-		if ( empty($results) ) return;
+		if ( empty($results)) {
+			if ( $iso != 'es' )
+				$this->setDynamicTranslations('es');			
+			return;
+		}
+		
+		$this->loadedLanguages[] = $iso;
 		
 		foreach ($results as $key=>$value) {
 			$m = 'set'.ucwords($key);
 			$this->$m($value);
 		}
 	}
-	
-
 }
