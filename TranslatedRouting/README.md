@@ -58,3 +58,30 @@ echo $router->generate('br_cms_registratione');
 // con params
 {{ costum_router('eunasa_cart_homepage', {'name' : 'jack'}) }}
 /es/carrito/hola/jack 
+
+
+// If you use a dynamic "change language" a trick to render change "locale" and stay in page is:
+// Additional params
+FX, you have a menu block
+{% render controller("MyCMSBundle:Component:Menu", {'route': app.request.get('_route')}) %}
+
+in coontroller you could do something like this
+$languages = $this->getDoctrine()->getManager()
+	->getRepository('ModelBundle:Language')
+    ->findAll();
+
+$route = $request->get('route');
+// request params, lets say you have a route like this: 
+// article/{slug}
+// slug is required but your "flags" will not render proberly so:
+
+$params = $request->attributes->get('_route_params');
+if ( isset($params['_controller']) ) unset($params['_controller']);
+if ( isset($params['_format']) ) unset($params['_format'])
+		
+foreach ($languages as $key => &$lang){
+    $params['_locale'] = $lang->getIso();
+	// setPath may exists, but you could create it or use language as array or even do this loop in twig view.
+	$lang->setPath($customRouter->generate($route, $params));    		
+}
+// then send "languages" to view
