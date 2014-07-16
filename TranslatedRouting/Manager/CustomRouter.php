@@ -1,18 +1,19 @@
 <?php
 
-namespace MyBundleBundle\Manager;
+namespace MyBundle\ModelBundle\Twig;
 
 use Symfony\Bundle\FrameworkBundle\Routing\Router;
 use Symfony\Component\DependencyInjection\Container;
 use Symfony\Component\Routing\Exception\RouteNotFoundException;
 
 
-class CustomRouter
+class CostumRouter
 {
 	private $container;
 	private $router;
 	private $user_locale;
-	private $default_locale;	
+	private $default_locale;
+	
 	
 	public function __construct(Router $router, Container $container, $default_locale)
 	{
@@ -31,6 +32,9 @@ class CustomRouter
 		if ( !$route )
 		   Throw new RouteNotFoundException('Upps!! No route for: '.$name);
 		
+		// If params has locale, fx by change lang menu
+		$this->user_locale = isset($params['_locale']) ? $params['_locale'] : $this->user_locale;
+		
 		// Check if translated routing
 		$requirements = $route->getRequirements();
 		
@@ -41,23 +45,20 @@ class CustomRouter
 		// Prefix url, from main routing to bundle
 		$prefix = explode('|', $requirements['_locale']);
 		$transl = explode('|', $requirements['_translated']);
-		$actionTranslation = isset($requirements['_action_translation']) ? 
-			explode('|', $requirements['_action_translation']) : false;
+		$actionTranslation = isset($requirements['_action_translation']) ? explode('|', $requirements['_action_translation']) : false;
 
 		// Array position of language
-		$langPosition = array_search($this->user_locale, $prefix);		
-		if (!$langPosition)
+		if (($langPosition = array_search($this->user_locale, $prefix)) === false)
 			$langPosition = array_search($this->default_locale, $prefix);
 		
 		// First param of new url
-		$params['_locale'] 		= $prefix[$langPosition];
-		$params['_translated'] 	= $transl[$langPosition];
+		$params['_locale'] = $prefix[$langPosition];
+		$params['_translated'] = $transl[$langPosition];
 		
 		// if action in bundle
 		if ( $actionTranslation )
 			$params['_action_translation'] = $actionTranslation[$langPosition];
-		
-		
+
 		return $this->router->generate($name, $params);
 	}
 }
