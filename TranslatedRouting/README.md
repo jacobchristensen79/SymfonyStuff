@@ -11,6 +11,7 @@ services:
         arguments: [@costum_router]
         tags:
           - { name: twig.extension }
+          - { name: kernel.event_listener, event: kernel.request, method: onKernelRequest }
 
 
 // YML Routing, main routing

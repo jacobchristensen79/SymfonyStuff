@@ -14,6 +14,10 @@ class CostumRouter extends \Twig_Extension {
     public function getFilters() {
 		return array();
     }
+	
+	public function onKernelRequest($event) {
+    	$this->request = $event->getRequest();
+    }
 
     public function getFunctions() {
         return array(
@@ -26,6 +30,8 @@ class CostumRouter extends \Twig_Extension {
     }
 
    	public function costumrouter($name,$params=array()){
+		$params['_locale'] = isset($params['_locale']) ? 
+			$params['_locale'] : $this->request->getLocale();
    		return $this->customrouter->generate($name, $params);
     }
 }
